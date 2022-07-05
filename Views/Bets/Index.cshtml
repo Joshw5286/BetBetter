@@ -1,0 +1,48 @@
+﻿@model IEnumerable<BetBetter.Models.Bet>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Bet log</h2>
+
+@if (!Model.Any())
+{
+    <p>No bets have been logged.</p>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>ClientId</th>
+                <th>Stake</th>
+                <th>Winnings</th>
+                <th>Cashout?</th>
+            </tr>
+
+        </thead>
+        <tbody>
+            @foreach (var bet in Model)
+            {
+            <tr>
+                <td>
+                    @Html.ActionLink(bet.ClientId, "Details", "Bets", new { id = bet.Id }, null)
+                </td>
+                @*<td>@bet.Stake.ToString("G")</td>*@
+                <td>@String.Format("{0:C}", bet.Stake)</td>
+                <td>@String.Format("{0:C}", bet.Winnings)</td>
+                @if (bet.Cashout)
+                {
+                    <td>Yes</td>
+                }
+                else
+                {
+                    <td>No</td>
+                }
+            </tr>
+            }
+        </tbody>
+    </table>
+}

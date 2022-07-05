@@ -1,0 +1,45 @@
+﻿@model IEnumerable<BetBetter.Models.BetCriteria>
+
+@{
+    ViewBag.Title = "Bet Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Bet log</h2>
+
+@if (!Model.Any())
+{
+    <p>Something went wrong.</p>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Criteria</th>
+                <th>SportTypeId</th>
+                <th>Odds</th>
+                <th>Win?</th>
+            </tr>
+
+        </thead>
+        <tbody>
+            @foreach (var criteria in Model)
+            {
+            <tr>
+                <td>@criteria.Criteria</td>
+                <td>@criteria.SportTypeId</td>
+                <td>@criteria.Odds</td>
+                @if (criteria.Win)
+                {
+                    <td>Yes</td>
+                }
+                else
+                {
+                    <td>No</td>
+                }
+            </tr>
+            }
+        </tbody>
+    </table>
+}
