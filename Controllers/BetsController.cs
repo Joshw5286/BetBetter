@@ -1,8 +1,5 @@
 ﻿using BetBetter.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace BetBetter.Controllers
@@ -15,6 +12,11 @@ namespace BetBetter.Controllers
             var bets = GetAllBets();
 
             return View(bets);
+        }
+
+        public ActionResult AccumulatorTracker()
+        {
+            return View();
         }
 
         public ActionResult Details(int id)
@@ -50,7 +52,7 @@ namespace BetBetter.Controllers
 
             return bets;
         }
-    
+
         public List<BetCriteria> GetBetCriteria(int betId)
         {
             List<BetCriteria> betCriteria = new List<BetCriteria>();

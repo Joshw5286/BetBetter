@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "AccumulatorTracker";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>AccumulatorTracker</h2>
+
+<label>Bet decription</label>
+<input type="text" id="bet-description" />
+
+<label>Odds</label>
+<input type="number" id="bet-odds" />
+<input type="button" onclick="accumulatorTracker.addSelection()" value="Add"/>
+
+<br />
+<label>Stake</label>
+<input type="number" id="bet-stake" onchange="accumulatorTracker.updateStake()" value="1"/>
+
+<table class="table" id="bet-table">
+    <thead>
+        <tr>
+            <th>Bet</th>
+            <th>Odds</th>
+            <th>Fail?</th>
+        </tr>
+    </thead>
+    <tbody id="bet-table-body">
+
+    </tbody>
+</table>
+
+<h3>Potential winnings: <span id="potential-winnings-value"></span></h3>
+
+<script src="~/Scripts/AccumulatorTracker.js"></script>
+
+<script>
+    const accumulatorTracker = new AccumulatorTracker();
+    accumulatorTracker.displaySelections();
+</script>
