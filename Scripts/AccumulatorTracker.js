@@ -3,9 +3,16 @@
     accumulatorTracker.getActiveSelections();
     accumulatorTracker.updatePotentialWinnings();
     //console.log(accumulatorTracker.combinations);
-    $(".bet-status").on("click", function () {
+
+    $(document).on("click", ".bet-status", function () {
         accumulatorTracker.updateActiveSelections();
         accumulatorTracker.updatePotentialWinnings();
+    });
+
+    $(document).on("keydown", "#add-bet-form input", function (e) {
+        if (e.key === "Enter") {
+            accumulatorTracker.addSelection();
+        }
     });
 });
 
@@ -19,24 +26,30 @@ class AccumulatorTracker {
     combinations = [];
 
     allSelections = [
-        {
-            id: 1,
-            description: "test 1",
-            odds: 2.9,
-            hasFailed: false
-        },
-        {
-            id: 2,
-            description: "test 2",
-            odds: 3.1,
-            hasFailed: false
-        },
-        {
-            id: 3,
-            description: "test 3",
-            odds: 1.4,
-            hasFailed: false
-        }
+        //{
+        //    id: 1,
+        //    description: "test 1",
+        //    odds: 2.9,
+        //    hasfailed: false
+        //},
+        //{
+        //    id: 2,
+        //    description: "test 2",
+        //    odds: 3.1,
+        //    hasfailed: false
+        //},
+        //{
+        //    id: 3,
+        //    description: "test 3",
+        //    odds: 1.4,
+        //    hasfailed: false
+        //},
+        //{
+        //    id: 4,
+        //    description: "test 4",
+        //    odds: 2,
+        //    hasfailed: false
+        //}
     ];
 
     activeSelections = [];
@@ -73,11 +86,30 @@ class AccumulatorTracker {
 
         this.allSelections.push(selection);
 
+        this.updateActiveSelections();
+        this.updatePotentialWinnings();
+        this.updateTotalStake();
         this.displaySelections();
+
+        $("#bet-description").val("");
+        $("#bet-odds").val("");
     }
 
     updateStake() {
-        this.stake = parseInt($("#bet-stake").val());
+        let stakeInput = parseFloat($("#bet-stake").val());
+        this.stake = stakeInput;
+
+        this.updateTotalStake();
+        this.updateActiveSelections();
+        this.updatePotentialWinnings();
+    }
+
+    updateTotalStake() {
+        debugger;
+
+        let totalStake = this.stake * this.combinations.length;
+        $("#total-stake").text(totalStake);
+
     }
 
     updateActiveSelections() {
@@ -97,6 +129,13 @@ class AccumulatorTracker {
         this.updateActiveSelections();
         let potentialWinnings = this.calculatePotentialWinnings();
 
+        let currencyConverter = new Intl.NumberFormat("en-UK", {
+            style: "currency",
+            currency: "GBP"
+        });
+
+        potentialWinnings = currencyConverter.format(potentialWinnings);
+
         $("#potential-winnings-value").text(potentialWinnings);
     }
 
@@ -115,7 +154,7 @@ class AccumulatorTracker {
 
             combination.forEach((c) => {
                 combinedOdds = combinedOdds * c.odds;
-                combinedOdds = parseFloat(combinedOdds).toFixed(2);
+                //combinedOdds = parseFloat(combinedOdds).toFixed(2);
             });
 
             betWinnings = this.stake * combinedOdds;
@@ -129,11 +168,11 @@ class AccumulatorTracker {
     }
 
     getAllCombinations() {
+        this.combinations = [];
         let result = [];
 
         let arr = this.activeSelections;
 
-        debugger;
         let totalCombinations = 1 << arr.length; // 2^n combinations
 
         for (let i = 0; i < totalCombinations; i++) {

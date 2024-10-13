@@ -6,16 +6,20 @@
 
 <h2>AccumulatorTracker</h2>
 
-<label>Bet decription</label>
-<input type="text" id="bet-description" />
+<form id="add-bet-form">
+    <label>Bet decription</label>
+    <input type="text" id="bet-description" />
 
-<label>Odds</label>
-<input type="number" id="bet-odds" />
-<input type="button" onclick="accumulatorTracker.addSelection()" value="Add"/>
+    <label>Odds</label>
+    <input type="number" id="bet-odds" />
+    <input type="button" onclick="accumulatorTracker.addSelection()" value="Add" />
 
-<br />
-<label>Stake</label>
-<input type="number" id="bet-stake" onchange="accumulatorTracker.updateStake()" value="1"/>
+    <br />
+    <label>Stake</label>
+    <input type="number" id="bet-stake" min="0.00" step="any" onchange="accumulatorTracker.updateStake()" value="1" />
+</form>
+
+<p>Totoal stake: <span id="total-stake"></span></p>
 
 <table class="table" id="bet-table">
     <thead>
