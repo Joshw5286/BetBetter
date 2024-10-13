@@ -112,7 +112,7 @@ class AccumulatorTracker {
             let combination = this.combinations[i];
 
             let combinedOdds = 1;
-            
+
             combination.forEach((c) => {
                 combinedOdds = combinedOdds * c.odds;
                 combinedOdds = parseFloat(combinedOdds).toFixed(2);
@@ -122,9 +122,6 @@ class AccumulatorTracker {
             totalWinnings += betWinnings;
 
             let betType = combination.length + " fold";
-
-            console.log(betType + " = " + betWinnings);
-            //console.log(betWinnings + " winnings for combination: " + JSON.stringify(combination));
         }
 
         this.totalOdds = totalOdds;
@@ -132,48 +129,27 @@ class AccumulatorTracker {
     }
 
     getAllCombinations() {
-        let totalOdds = 0;
-        let totalWinnings = 0;
-        this.combinations = [];
+        let result = [];
 
-        this.activeSelections.forEach((b1) => {
+        let arr = this.activeSelections;
 
-            //Add single bet
-            this.combinations.push([b1]);
+        debugger;
+        let totalCombinations = 1 << arr.length; // 2^n combinations
 
-            let otherSelections = this.activeSelections.filter(x => x.id != b1.id);
+        for (let i = 0; i < totalCombinations; i++) {
+            let combination = [];
 
-            let comboToAdd = [b1];
-            otherSelections.forEach((b2) => {
-                comboToAdd.push(b2);
-                if (!this.isCombinationAlreadyAdded(comboToAdd)) {
-                    this.combinations.push(Object.assign([], comboToAdd));
+            for (let j = 0; j < arr.length; j++) {
+                if (i & (1 << j)) {
+                    combination.push(arr[j]); // Add object to combination if the bit is set
                 }
-            });
+            }
+            if (combination != null && combination.length > 0) {
+                result.push(combination); // Add the current combination to result
+            }
+        }
 
-            //while (otherSelections.length > 0) {
-            //    let currentCombinations = [];
-
-            //    currentCombinations.push(b1);
-
-            //    otherSelections.forEach((b2) => {
-            //        currentCombinations.push(b2);
-            //    });
-
-            //    currentCombinations = currentCombinations.sort((a, b) => {
-            //        if (a.id < b.id) {
-            //            return -1;
-            //        }
-            //    });
-
-            //    if (!this.isCombinationAlreadyAdded(currentCombinations)) {
-            //        this.combinations.push(currentCombinations);
-            //    }
-            //    otherSelections.shift();
-            //}
-
-            //this.combinations.push([b1]);
-        });
+        this.combinations = result;
     }
 
     isCombinationAlreadyAdded(combinationsToAdd) {
