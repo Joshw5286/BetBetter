@@ -2,8 +2,7 @@
     accumulatorTracker.updateStake();
     accumulatorTracker.getActiveSelections();
     accumulatorTracker.updatePotentialWinnings();
-    console.log(accumulatorTracker.combinations);
-
+    //console.log(accumulatorTracker.combinations);
     $(".bet-status").on("click", function () {
         accumulatorTracker.updateActiveSelections();
         accumulatorTracker.updatePotentialWinnings();
@@ -59,7 +58,7 @@ class AccumulatorTracker {
         betTableBody.html(html);
     }
 
-    addSelection () {
+    addSelection() {
         let betDescription = $("#bet-description").val();
         let betOdds = $("#bet-odds").val();
 
@@ -113,11 +112,12 @@ class AccumulatorTracker {
             let combination = this.combinations[i];
 
             let combinedOdds = 1;
+            
             combination.forEach((c) => {
                 combinedOdds = combinedOdds * c.odds;
                 combinedOdds = parseFloat(combinedOdds).toFixed(2);
             });
-            
+
             betWinnings = this.stake * combinedOdds;
             totalWinnings += betWinnings;
 
@@ -138,11 +138,20 @@ class AccumulatorTracker {
 
         this.activeSelections.forEach((b1) => {
 
-            let otherSelections = this.activeSelections.filter(x => x.id != b1.id);
-            debugger;
+            //Add single bet
+            this.combinations.push([b1]);
 
-            //otherSelections.forEach(() => {
-            //    debugger;
+            let otherSelections = this.activeSelections.filter(x => x.id != b1.id);
+
+            let comboToAdd = [b1];
+            otherSelections.forEach((b2) => {
+                comboToAdd.push(b2);
+                if (!this.isCombinationAlreadyAdded(comboToAdd)) {
+                    this.combinations.push(Object.assign([], comboToAdd));
+                }
+            });
+
+            //while (otherSelections.length > 0) {
             //    let currentCombinations = [];
 
             //    currentCombinations.push(b1);
@@ -160,32 +169,10 @@ class AccumulatorTracker {
             //    if (!this.isCombinationAlreadyAdded(currentCombinations)) {
             //        this.combinations.push(currentCombinations);
             //    }
-
             //    otherSelections.shift();
-            //});
+            //}
 
-            while (otherSelections.length > 0) {
-                let currentCombinations = [];
-
-                currentCombinations.push(b1);
-
-                otherSelections.forEach((b2) => {
-                    currentCombinations.push(b2);
-                });
-
-                currentCombinations = currentCombinations.sort((a, b) => {
-                    if (a.id < b.id) {
-                        return -1;
-                    }
-                });
-
-                if (!this.isCombinationAlreadyAdded(currentCombinations)) {
-                    this.combinations.push(currentCombinations);
-                }
-                otherSelections.shift();
-            }
-
-            this.combinations.push([b1]);
+            //this.combinations.push([b1]);
         });
     }
 
@@ -194,18 +181,19 @@ class AccumulatorTracker {
         if (this.combinations.length <= 0) {
             return false;
         }
+        //Sort combo
+        combinationsToAdd = combinationsToAdd.sort((a, b) => {
+            if (a.id < b.id) {
+                return -1;
+            }
+        });
 
-        for (var i = 0; i < combinationsToAdd.length; i++) {
-            for (var i2 = 0; i2 < this.combinations.length; i2++) {
+        for (var i2 = 0; i2 < this.combinations.length; i2++) {
 
-                let c = this.combinations[i2];
-                
-                if (JSON.stringify(c) === JSON.stringify(combinationsToAdd)) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
+            let c = this.combinations[i2];
+
+            if (JSON.stringify(c) === JSON.stringify(combinationsToAdd)) {
+                return true;
             }
         }
     }
